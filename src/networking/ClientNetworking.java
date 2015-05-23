@@ -10,6 +10,7 @@ import java.util.TimerTask;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import common.ControlState;
 import common.Entity;
 
 public class ClientNetworking {
@@ -18,8 +19,11 @@ public class ClientNetworking {
     
     private List<Entity> latestObjectList = new ArrayList<>();
     private Socket socket;
+    private volatile ControlState controlState;
     
-    public ClientNetworking() {
+    public ClientNetworking(ControlState controlState) {
+        this.controlState = controlState;
+        
         try {
             socket = new Socket("127.0.0.1", 50805);
         } catch (Exception ex) {
@@ -46,6 +50,7 @@ public class ClientNetworking {
         }
         try {
             OutputStream output = socket.getOutputStream();
+            mapper.writeValue(output, controlState);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

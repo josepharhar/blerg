@@ -3,8 +3,6 @@ package client;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import common.Entity;
-
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -19,10 +17,14 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import networking.ClientNetworking;
 
+import common.ControlState;
+import common.Entity;
+
 public class GUI extends Application {
 	
 	private Canvas canvas;
 	private ClientNetworking networking;
+	private volatile ControlState controlState;
     
     public static void main(String[] args) {
         launch(args);
@@ -32,7 +34,8 @@ public class GUI extends Application {
         arg0.setTitle("The Blerg!");
         arg0.setScene(new Scene(buildWindow(), 800, 800));
         arg0.show();
-        networking = new ClientNetworking();
+        controlState = new ControlState();
+        networking = new ClientNetworking(controlState);
     }
     
     public Parent buildWindow() {
