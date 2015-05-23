@@ -1,15 +1,28 @@
 package gui;
 
+import game.Entity;
+
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import networking.Networking;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class GUI extends Application {
+	
+	private Canvas canvas;
+	private Networking networking;
     
     public static void main(String[] args) {
         launch(args);
@@ -17,9 +30,9 @@ public class GUI extends Application {
 
     public void start(Stage arg0) throws Exception {
         arg0.setTitle("The Blerg!");
-        arg0.setScene(new Scene(buildWindow(), 300, 275));
+        arg0.setScene(new Scene(buildWindow(), 800, 800));
         arg0.show();
-        
+        networking = new Networking();
     }
     
     public Parent buildWindow() {
@@ -30,9 +43,34 @@ public class GUI extends Application {
         grid.setHgap(10); // horizontal space between objects
         grid.setVgap(10); // vertical ^^
         
-        grid.add(new Button("asdf"), 0, 0);
+        canvas = new Canvas(800,800);
+        
+        grid.add(canvas, 0, 0);
+        
+        Timer timer = new Timer();
+        
+        TimerTask updateDrawing = new TimerTask() {
+			@Override
+			public void run() {
+				updateCanvas(canvas.getGraphicsContext2D());
+			}
+        };
+        
+        timer.scheduleAtFixedRate(updateDrawing, 16, 16);
         
         return grid;
+    }
+    
+    private void updateCanvas(GraphicsContext g) {
+    	if (networking == null) {
+    		return;
+    	}
+    	g.setFill(Color.GREY);
+    	g.fillRect(0, 0, 800, 800);
+    	for (Entity entity : networking.getLatestState()) {
+    		g.setFill(entity.getColor());
+    		g.fillOval(entity.getx() - entity.getr() / 2, entity.gety() - entity.getr() / 2, entity.getr(), entity.getr());
+    	}
     }
     
 }

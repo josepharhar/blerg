@@ -1,8 +1,11 @@
 package game;
 
 import collision.Position;
+import javafx.scene.paint.Color;
 
 public interface Entity {
+	
+	public Color getColor();
     
     /**
      * Get the x location of this entity

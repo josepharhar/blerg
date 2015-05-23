@@ -1,6 +1,7 @@
 package game;
 
 import collision.Position;
+import javafx.scene.paint.Color;
 
 public class Player implements Entity {
 
@@ -38,5 +39,10 @@ public class Player implements Entity {
     public void collide(Entity other) {
         //TODO: do something when they collide
     }
+
+	@Override
+	public Color getColor() {
+		return Color.BLACK;
+	}
 
 }
