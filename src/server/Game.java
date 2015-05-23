@@ -33,7 +33,7 @@ public class Game {
 	    SuperCollider.collide(entities);
 	    
 		for (Entity entity : entities) {
-		    entity.update();
+		    //entity.update();
 		}
 	}
 	

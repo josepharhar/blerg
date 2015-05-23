@@ -8,13 +8,12 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
+import javafx.scene.paint.Color;
+
 import org.codehaus.jackson.map.ObjectMapper;
 
 import server.Player;
@@ -43,6 +42,7 @@ public class ServerNetworking {
     public ServerNetworking() {
         try {
             serverSocket = new ServerSocket(50805);
+            serverSocket.setSoTimeout(100);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -54,9 +54,12 @@ public class ServerNetworking {
                 doNetworkTick();
             }
         };
-        networkTimer.scheduleAtFixedRate(doNetworkingRead, 200, 200);
-        Player player = new Player(40, 50, 100002);
-        player.setRadius(5);
+        networkTimer.scheduleAtFixedRate(doNetworkingRead, 200, 1000);
+        Player player = new Player();
+        player.setRadius(20);
+        player.setxLocation(50);
+        player.setyLocation(50);
+        player.setColor(Color.CHARTREUSE);
         entityList.add(player);
     }
 
@@ -69,36 +72,63 @@ public class ServerNetworking {
     }
 
     private void doNetworkTick() {
-        byte[] bytes;
+        String data;
         try {
-            bytes = mapper.writeValueAsBytes(entityList);
+            StringBuilder dataString = new StringBuilder();
+            for (Entity entity : entityList) {
+                dataString.append(mapper.writeValueAsString(entity));
+                dataString.append('\0');
+            }
+            data = dataString.toString();
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         }
+        new Thread(() -> {
+            try {
+                Socket sock = serverSocket.accept();
+                long id = System.currentTimeMillis();
+                SocketHolder holder = new SocketHolder();
+                holder.socket = sock;
+                holder.entityID = id;
+                activeClients.add(holder);
+            } catch (SocketTimeoutException ex) {
+                //expected
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                throw new RuntimeException(ex);
+            }
+        }).start();
         for (SocketHolder sh : activeClients) {
             Socket socket = sh.socket;
-            if (!socket.isClosed()) {
+            if (!socket.isClosed()) {/*
                 new Thread(() -> {
                     try {
                         InputStream is = socket.getInputStream();
-                        ControlState state = mapper.readValue(is, ControlState.class);
-                        playerControls.put(sh.entityID, state);
+                        ControlState state = null;
+                        while (!socket.isClosed() && is.available() > 0) {
+                            state = mapper.readValue(is, ControlState.class);
+                        }
+                        if (state != null) {
+                            playerControls.put(sh.entityID, state);
+                        }
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         throw new RuntimeException(ex);
                     }
-                }).start();
+                }).start();*/
                 new Thread(() -> {
                     try {
                         UpdateHeader header = new UpdateHeader();
                         header.setYouAre(sh.entityID);
                         OutputStream os = socket.getOutputStream();
                         os.write(mapper.writeValueAsBytes(header));
-                        os.write(bytes);
+                        os.write(0);
+                        os.write(data.getBytes());
+                        os.flush();
                     } catch (Exception ex) {
-                        ex.printStackTrace();
-                        throw new RuntimeException(ex);
+                       // ex.printStackTrace();
+                        //throw new RuntimeException(ex);
                     }
                 }).start();
             }

@@ -1,41 +1,69 @@
 package common;
 
-import server.Position;
 import javafx.scene.paint.Color;
 
-public interface Entity {
-	
-	public long getEntityID();
-	
-	public Color getColor();
+public class Entity {
+    private long entityID;
+    private double xLocation;
+    private double yLocation;
+    private double xVelocity;
+    private double yVelocity;
+    private double radius;
+    private int red;
+    private int blue;
+    private int green;
     
-    /**
-     * Get the x location of this entity
-     */
-    public double getx();
+    public long getEntityID() {
+        return entityID;
+    }
     
-    /**
-     * Get the y location of this entity
-     */
-    public double gety();
+    public void setEntityID(long entityID) {
+        this.entityID = entityID;
+    }
     
-    /**
-     * Get position (x and y)
-     */
-    public Position getLocation();
+    public double getxLocation() {
+        return xLocation;
+    }
     
-    /**
-     * Get the radius of this entity, since all entities are circles
-     */
-    public double getr();
+    public void setxLocation(double xLocation) {
+        this.xLocation = xLocation;
+    }
     
-    /**
-     * Tell this entity to update its position, etc.
-     */
-    public void update();
+    public double getyLocation() {
+        return yLocation;
+    }
     
-    /**
-     * Tell this entity to collide with another entity
-     */
-    public void collide(Entity other);
+    public void setyLocation(double yLocation) {
+        this.yLocation = yLocation;
+    }
+    
+    public double getxVelocity() {
+        return xVelocity;
+    }
+    
+    public void setxVelocity(double xVelocity) {
+        this.xVelocity = xVelocity;
+    }
+    
+    public double getyVelocity() {
+        return yVelocity;
+    }
+    
+    public void setyVelocity(double yVelocity) {
+        this.yVelocity = yVelocity;
+    }
+    
+    public double getRadius() {
+        return radius;
+    }
+    
+    public void setRadius(double radius) {
+        this.radius = radius;
+    }
+    
+    
+    public void setColor(Color color) {
+        this.color = color;
+    }
+    
 }
