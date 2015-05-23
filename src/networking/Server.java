@@ -7,21 +7,35 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 import common.ControlState;
 
 public class Server {
+    
+    private static class SocketHolder {
+        public Socket socket;
+        public long entityID;
+    }
 
     private List<Entity> entityList;
-    private List<Socket> activeClients;
+    private List<SocketHolder> activeClients;
     private ServerSocket serverSocket;
 
     private HashMap<Long, ControlState> playerControls;
+    
+    private ObjectMapper mapper = new ObjectMapper();
+    
+    public static void main(String args[]) {
+        Server server = new Server();
+    }
 
     public Server() {
         try {
@@ -37,7 +51,7 @@ public class Server {
                 doNetworkTick();
             }
         };
-        timer.scheduleAtFixedRate(doNetworking, 100, 100);
+        timer.scheduleAtFixedRate(doNetworking, 200, 200);
     }
 
     public void setEntityList(List<Entity> entityList) {
@@ -56,21 +70,45 @@ public class Server {
             e.printStackTrace();
         }
         if (newConnection != null) {
-            activeClients.add(newConnection);
+            SocketHolder sh = new SocketHolder();
+            sh.socket = newConnection;
+            sh.entityID = System.currentTimeMillis();
+            activeClients.add(sh);
         }
         
-        Iterator<Socket> iter = activeClients.iterator();
+        Iterator<SocketHolder> iter = activeClients.iterator();
+        
+        List<Entity> toSend = new ArrayList<>(entityList);
+        byte[] data = null;
+        try {
+            data = mapper.writeValueAsBytes(toSend);
+            String data2 = mapper.writeValueAsString(toSend);
+            System.out.println("data2: " + data2);
+        } catch (Exception ex) {
+            // TODO Auto-generated catch block
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
         
         while (iter.hasNext()) {
             try {
-            Socket socket = iter.next();
+            SocketHolder socketHolder = iter.next();
+            Socket socket = socketHolder.socket;
             if (socket.isClosed()) {
                 iter.remove();
                 continue;
             }
                 InputStream input = socket.getInputStream();
+                while (input.available() > 0) {
+                    ControlState state = mapper.readValue(input, ControlState.class);
+                    playerControls.put(socketHolder.entityID, state);
+                }
                 OutputStream output = socket.getOutputStream();
-                
+                UpdateHeader header = new UpdateHeader();
+                header.setYouAre(socketHolder.entityID);
+                header.setObjectCount(toSend.size());
+                mapper.writeValue(output, header);
+                output.write(data);
             } catch (IOException e) {
                 e.printStackTrace();
             }
