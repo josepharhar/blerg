@@ -5,6 +5,8 @@ import javafx.scene.paint.Color;
 
 public interface Entity {
 	
+	public long getEntityID();
+	
 	public Color getColor();
     
     /**

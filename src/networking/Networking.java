@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Networking {
 	
-	public void start() {
+	public void startClient() {
 		
 	}
 	

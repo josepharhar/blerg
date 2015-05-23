@@ -10,9 +10,11 @@ public class Player implements Entity {
     
     private double vx;
     private double vy;
+    private long entityID;
     
-    public Player(double x, double y) {
+    public Player(double x, double y, long entityID) {
         pos = new Position(x, y);
+        this.entityID = entityID;
     }
     
     public double getx() {
@@ -43,6 +45,11 @@ public class Player implements Entity {
 	@Override
 	public Color getColor() {
 		return Color.BLACK;
+	}
+
+	@Override
+	public long getEntityID() {
+		return entityID;
 	}
 
 }
