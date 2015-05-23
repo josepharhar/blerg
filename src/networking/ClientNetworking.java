@@ -73,4 +73,14 @@ public class ClientNetworking {
             throw new RuntimeException(ex);
         }
     }
+    
+    public Entity getCurrentPlayer() {
+        for (Entity entity : latestObjectList) {
+            if (entity.getEntityID() == playerID) {
+                return entity;
+            }
+        }
+        
+        return null;
+    }
 }

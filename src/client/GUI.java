@@ -84,6 +84,12 @@ public class GUI extends Application {
     
     private void mouseMoved(MouseEvent event) {
         System.out.println("x: " + event.getX() + "\ny: " + event.getY());
+        Entity player = networking.getCurrentPlayer();
+        double dx = event.getX() - player.getx();
+        double dy = event.getY() - player.gety();
+        // TODO: account for different quadrants here
+        double angle = Math.atan(dy / dx);
+        controlState.setDirection(angle);
     }
     
 }
