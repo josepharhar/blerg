@@ -34,6 +34,10 @@ public class Player implements Entity {
         return r;
     }
     
+    public void setRadius(double radius) {
+        r = radius;
+    }
+    
     public void update() {
         this.pos.x += this.vx;
         this.pos.y += this.vy;

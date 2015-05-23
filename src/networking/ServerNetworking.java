@@ -14,6 +14,7 @@ import java.util.TimerTask;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import server.Player;
 import common.ControlState;
 import common.Entity;
 
@@ -24,8 +25,8 @@ public class ServerNetworking {
         public long entityID;
     }
 
-    private List<Entity> entityList;
-    private List<SocketHolder> activeClients;
+    private List<Entity> entityList = new ArrayList<>();
+    private List<SocketHolder> activeClients = new ArrayList<>();
     private ServerSocket serverSocket;
 
     private HashMap<Long, ControlState> playerControls;
@@ -51,6 +52,9 @@ public class ServerNetworking {
             }
         };
         timer.scheduleAtFixedRate(doNetworking, 200, 200);
+        Player player = new Player(40, 50, 100002);
+        player.setRadius(5);
+        entityList.add(player);
     }
 
     public void setEntityList(List<Entity> entityList) {
@@ -62,18 +66,6 @@ public class ServerNetworking {
     }
 
     private void doNetworkTick() {
-        Socket newConnection = null;
-        try {
-            newConnection = serverSocket.accept();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (newConnection != null) {
-            SocketHolder sh = new SocketHolder();
-            sh.socket = newConnection;
-            sh.entityID = System.currentTimeMillis();
-            activeClients.add(sh);
-        }
         
         Iterator<SocketHolder> iter = activeClients.iterator();
         
@@ -111,6 +103,20 @@ public class ServerNetworking {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        
+        Socket newConnection = null;
+        try {
+            newConnection = serverSocket.accept();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (newConnection != null) {
+            SocketHolder sh = new SocketHolder();
+            sh.socket = newConnection;
+            sh.entityID = System.currentTimeMillis();
+            System.out.println("AcceptingClient: " + sh.entityID);
+            activeClients.add(sh);
         }
     }
 

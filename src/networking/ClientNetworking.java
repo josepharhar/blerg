@@ -17,9 +17,10 @@ public class ClientNetworking {
     
     private ObjectMapper mapper = new ObjectMapper();
     
-    private List<Entity> latestObjectList = new ArrayList<>();
     private Socket socket;
+    private volatile List<Entity> latestObjectList = new ArrayList<>();
     private volatile ControlState controlState;
+    private volatile long playerID;
     
     public ClientNetworking(ControlState controlState) {
         this.controlState = controlState;
@@ -54,11 +55,15 @@ public class ClientNetworking {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+        if (socket.isClosed()) {
+            throw new RuntimeException("Connection to server lost");
+        }
         try {
             List<Entity> newObjectList = new ArrayList<Entity>();
             if (socket.getInputStream().available() > 0) {
                 InputStream input = socket.getInputStream();
                 UpdateHeader header = mapper.readValue(input, UpdateHeader.class);
+                playerID = header.getYouAre();
                 for (int i = 0; i < header.getObjectCount(); i++) {
                     newObjectList.add(mapper.readValue(input, Entity.class));
                 }
