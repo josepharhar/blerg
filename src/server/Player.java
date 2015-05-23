@@ -1,6 +1,7 @@
-package game;
+package server;
 
-import collision.Position;
+import common.Entity;
+
 import javafx.scene.paint.Color;
 
 public class Player implements Entity {

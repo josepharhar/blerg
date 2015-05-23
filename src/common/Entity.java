@@ -1,6 +1,6 @@
-package game;
+package common;
 
-import collision.Position;
+import server.Position;
 import javafx.scene.paint.Color;
 
 public interface Entity {

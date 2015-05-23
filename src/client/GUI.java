@@ -1,9 +1,9 @@
-package gui;
-
-import game.Entity;
+package client;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import common.Entity;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -17,12 +17,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import networking.Networking;
+import networking.ClientNetworking;
 
 public class GUI extends Application {
 	
 	private Canvas canvas;
-	private Networking networking;
+	private ClientNetworking networking;
     
     public static void main(String[] args) {
         launch(args);
@@ -32,7 +32,7 @@ public class GUI extends Application {
         arg0.setTitle("The Blerg!");
         arg0.setScene(new Scene(buildWindow(), 800, 800));
         arg0.show();
-        networking = new Networking();
+        networking = new ClientNetworking();
     }
     
     public Parent buildWindow() {

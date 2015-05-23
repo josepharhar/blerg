@@ -1,4 +1,4 @@
-package collision;
+package server;
 
 public class Position {
     public double x;

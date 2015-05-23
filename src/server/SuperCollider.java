@@ -1,11 +1,11 @@
-package collision;
-
-import game.Entity;
+package server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
+import common.Entity;
 
 public class SuperCollider {
     private static final int MAGIC_NUMBER = 12;

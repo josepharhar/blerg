@@ -1,7 +1,5 @@
 package networking;
 
-import game.Entity;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,6 +15,7 @@ import java.util.TimerTask;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import common.ControlState;
+import common.Entity;
 
 public class ServerNetworking {
     

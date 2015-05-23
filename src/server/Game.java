@@ -1,11 +1,11 @@
-package game;
+package server;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import collision.SuperCollider;
+import common.Entity;
 
 public class Game {
     

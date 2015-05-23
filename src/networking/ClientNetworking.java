@@ -1,7 +1,5 @@
 package networking;
 
-import game.Entity;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -11,6 +9,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.codehaus.jackson.map.ObjectMapper;
+
+import common.Entity;
 
 public class ClientNetworking {
     
