@@ -1,5 +1,7 @@
 package game;
 
+import collision.Position;
+
 public interface Entity {
     
     /**
@@ -13,6 +15,11 @@ public interface Entity {
     public double gety();
     
     /**
+     * Get position (x and y)
+     */
+    public Position getLocation();
+    
+    /**
      * Get the radius of this entity, since all entities are circles
      */
     public double getr();
@@ -21,4 +28,9 @@ public interface Entity {
      * Tell this entity to update its position, etc.
      */
     public void update();
+    
+    /**
+     * Tell this entity to collide with another entity
+     */
+    public void collide(Entity other);
 }

@@ -27,5 +27,11 @@ public class Game {
 		    entity.update();
 		}
 	}
+	
+	private void checkCollision() {
+	    for (Entity entity : entities) {
+	        
+	    }
+	}
     
 }
