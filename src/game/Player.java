@@ -39,7 +39,11 @@ public class Player implements Entity {
     }
     
     public void collide(Entity other) {
-        //TODO: do something when they collide
+        other.collide(this);
+        
+        // poor deflection physics
+        this.vx *= -1;
+        this.vy *= -1;
     }
 
 	@Override

@@ -1,12 +1,19 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import collision.SuperCollider;
+
 public class Game {
     
     private List<Entity> entities;
+    
+    public Game() {
+        entities = new ArrayList<Entity>();
+    }
 	
 	public void startGame() {
 		Timer timer = new Timer();
@@ -23,15 +30,15 @@ public class Game {
 	}
 	
 	private void updateGameState() {
+	    SuperCollider.collide(entities);
+	    
 		for (Entity entity : entities) {
 		    entity.update();
 		}
 	}
 	
-	private void checkCollision() {
-	    for (Entity entity : entities) {
-	        
-	    }
+	public void addEntity(Entity newEntity) {
+	    entities.add(newEntity);
 	}
     
 }
