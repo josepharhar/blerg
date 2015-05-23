@@ -39,4 +39,11 @@ public class ControlState {
     public void setMagniture(double magniture) {
         this.magniture = magniture;
     }
+
+    @Override
+    public String toString() {
+        return "ControlState [splitting=" + splitting + ", shooting="
+                + shooting + ", direction=" + direction + ", magniture="
+                + magniture + "]";
+    }
 }

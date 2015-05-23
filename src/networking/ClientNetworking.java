@@ -35,10 +35,11 @@ public class ClientNetworking {
         TimerTask doNetworking = new TimerTask() {
             @Override
             public void run() {
+                System.out.println("doingTick");
                 doNetworkTick();
             }
         };
-        timer.schedule(doNetworking, 100, 40);
+        timer.schedule(doNetworking, 100, 100);
     }
 
     public List<Entity> getLatestState() {
@@ -49,28 +50,32 @@ public class ClientNetworking {
         if (socket.isClosed()) {
             throw new RuntimeException("Connection to server lost");
         }
-        try {
-            OutputStream output = socket.getOutputStream();
-            mapper.writeValue(output, controlState);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+        new Thread(() -> {
+            try {
+                if (socket.getInputStream().available() > 0) {
+                    InputStream input = socket.getInputStream();
+                    UpdateHeader header = mapper.readValue(input, UpdateHeader.class);
+                    playerID = header.getYouAre();
+                    latestObjectList = (List<Entity>) mapper.readValue(input, List.class);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                throw new RuntimeException(ex);
+            }
+        }).start();
+        new Thread(() -> {
+            try {
+                OutputStream output = socket.getOutputStream();
+                byte[] toWrite = mapper.writeValueAsBytes(controlState);
+                output.write(toWrite);
+                output.flush();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                throw new RuntimeException(ex);
+            }
+        }).start();
         if (socket.isClosed()) {
             throw new RuntimeException("Connection to server lost");
-        }
-        try {
-            List<Entity> newObjectList = new ArrayList<Entity>();
-            if (socket.getInputStream().available() > 0) {
-                InputStream input = socket.getInputStream();
-                UpdateHeader header = mapper.readValue(input, UpdateHeader.class);
-                playerID = header.getYouAre();
-                for (int i = 0; i < header.getObjectCount(); i++) {
-                    newObjectList.add(mapper.readValue(input, Entity.class));
-                }
-            }
-            latestObjectList = newObjectList;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
         }
     }
     
