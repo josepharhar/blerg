@@ -11,6 +11,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -53,6 +55,11 @@ public class GUI extends Application {
                 mouseMoved(event);
             }
         });
+        canvas.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            public void handle(KeyEvent event) {
+                keyPressed(event);
+            }
+        });
         
         grid.add(canvas, 0, 0);
         
@@ -82,11 +89,24 @@ public class GUI extends Application {
     	}
     }
     
+    private void keyPressed(KeyEvent event) {
+        KeyCode code = event.getCode();
+        if (code.equals(KeyCode.SPACE)) {
+            System.out.println("SPACE");
+            controlState.setSplitting(true);
+        } else if (code.equals(KeyCode.W)) {
+            System.out.println("W");
+            controlState.setShooting(true);
+        }
+    }
+    
     private void mouseMoved(MouseEvent event) {
-        System.out.println("x: " + event.getX() + "\ny: " + event.getY());
+//        System.out.println("x: " + event.getX() + "\ny: " + event.getY());
         Entity player = networking.getCurrentPlayer();
         double dx = event.getX() - player.getx();
         double dy = event.getY() - player.gety();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        controlState.setMagniture(distance > 10 ? 10 : distance);
         // TODO: account for different quadrants here
         double angle = Math.atan(dy / dx);
         controlState.setDirection(angle);
