@@ -6,6 +6,9 @@ public class Player implements Entity {
     private double y;
     private double r;
     
+    private double vx;
+    private double vy;
+    
     public double getx() {
         return x;
     }
@@ -16,6 +19,11 @@ public class Player implements Entity {
     
     public double getr() {
         return r;
+    }
+    
+    public void update() {
+        this.x += this.vx;
+        this.y += this.vy;
     }
 
 }

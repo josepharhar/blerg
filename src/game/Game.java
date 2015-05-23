@@ -1,9 +1,12 @@
 package game;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Game {
+    
+    private List<Entity> entities;
 	
 	public void startGame() {
 		Timer timer = new Timer();
@@ -20,7 +23,9 @@ public class Game {
 	}
 	
 	private void updateGameState() {
-		
+		for (Entity entity : entities) {
+		    entity.update();
+		}
 	}
     
 }

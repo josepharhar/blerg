@@ -16,4 +16,9 @@ public interface Entity {
      * Get the radius of this entity, since all entities are circles
      */
     public double getr();
+    
+    /**
+     * Tell this entity to update its position, etc.
+     */
+    public void update();
 }
