@@ -2,22 +2,22 @@ package gui;
 
 import game.Entity;
 
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import networking.Networking;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import networking.Networking;
 
 public class GUI extends Application {
 	
@@ -43,7 +43,13 @@ public class GUI extends Application {
         grid.setHgap(10); // horizontal space between objects
         grid.setVgap(10); // vertical ^^
         
-        canvas = new Canvas(800,800);
+        canvas = new Canvas(800, 800);
+        
+        canvas.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                mouseMoved(event);
+            }
+        });
         
         grid.add(canvas, 0, 0);
         
@@ -71,6 +77,10 @@ public class GUI extends Application {
     		g.setFill(entity.getColor());
     		g.fillOval(entity.getx() - entity.getr() / 2, entity.gety() - entity.getr() / 2, entity.getr(), entity.getr());
     	}
+    }
+    
+    private void mouseMoved(MouseEvent event) {
+        System.out.println("x: " + event.getX() + "\ny: " + event.getY());
     }
     
 }
