@@ -12,14 +12,14 @@ import java.util.TimerTask;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-public class Networking {
+public class ClientNetworking {
     
     private ObjectMapper mapper = new ObjectMapper();
     
     private List<Entity> latestObjectList = new ArrayList<>();
     private Socket socket;
     
-    public Networking() {
+    public ClientNetworking() {
         try {
             socket = new Socket("127.0.0.1", 50805);
         } catch (Exception ex) {

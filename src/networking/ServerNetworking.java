@@ -18,7 +18,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import common.ControlState;
 
-public class Server {
+public class ServerNetworking {
     
     private static class SocketHolder {
         public Socket socket;
@@ -34,10 +34,10 @@ public class Server {
     private ObjectMapper mapper = new ObjectMapper();
     
     public static void main(String args[]) {
-        Server server = new Server();
+        ServerNetworking server = new ServerNetworking();
     }
 
-    public Server() {
+    public ServerNetworking() {
         try {
             serverSocket = new ServerSocket(50805);
         } catch (IOException e) {
