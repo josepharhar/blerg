@@ -1,24 +1,21 @@
-package networking;
+package client;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import server.Player;
 import common.ControlState;
 import common.Entity;
+import common.networking.UpdateFooter;
 
 public class ClientNetworking {
     
@@ -45,7 +42,7 @@ public class ClientNetworking {
                 doNetworkTick();
             }
         };
-        timer.schedule(doNetworking, 800, 800);
+        timer.schedule(doNetworking, 100, 100);
     }
 
     public List<Entity> getLatestState() {
@@ -58,57 +55,48 @@ public class ClientNetworking {
         }
         new Thread(() -> {
             try {
-                System.out.println("Attempting read");
                 InputStream stream = socket.getInputStream();
                 int contentAmt = stream.available();
                 byte[] bytes = new byte[contentAmt];
                 stream.read(bytes);
                 String str = new String(bytes);
-                System.out.println(str);
                 String stuff[] = str.split("\0");
                 List<Entity> newList = new ArrayList<>();
+                HashMap<Long, Entity> newEntities = new HashMap<>();
                 for (String s : stuff) {
                     if (s.contains("{")) {
-                        System.out.println("reading value: \'" + s + "\'");
                         try {
-                            playerID = mapper.readValue(s, UpdateHeader.class).getYouAre();
+                            Entity entity = mapper.readValue(s, Entity.class);
+                            newEntities.put(entity.getEntityID(), entity);
                         } catch (JsonMappingException ex) {
-                            newList.add(mapper.readValue(s, Entity.class));
+                            playerID = mapper.readValue(s, UpdateFooter.class).getYouAre();
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             throw new RuntimeException(ex);
                         }
                     }
                 }
-                latestObjectList = newList;
-                /*
-                if (socket.getInputStream().available() > 0) {
-                    System.out.println("performing read");
-                    InputStream input = socket.getInputStream();
-                    
-                    JsonParser parser = jsonFactory.createJsonParser(input);
-                    UpdateHeader header = parser.readValueAs(UpdateHeader.class);
-                    System.out.println("read something");
-                    playerID = header.getYouAre();
-                    latestObjectList = (List<Entity>) parser.readValueAs(List.class);
+                for (Map.Entry<Long, Entity> entry : newEntities.entrySet()) {
+                    newList.add(entry.getValue());
                 }
-                System.out.println(new String());*/
+                latestObjectList = newList;
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new RuntimeException(ex);
             }
-        }).start();/*
+        }).start();
         new Thread(() -> {
             try {
                 OutputStream output = socket.getOutputStream();
                 byte[] toWrite = mapper.writeValueAsBytes(controlState);
                 output.write(toWrite);
+                output.write(0);
                 output.flush();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new RuntimeException(ex);
             }
-        }).start();*/
+        }).start();
     }
     
     public Entity getCurrentPlayer() {

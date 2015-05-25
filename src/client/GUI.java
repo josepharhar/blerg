@@ -17,8 +17,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import networking.ClientNetworking;
-
 import common.ControlState;
 import common.Entity;
 
@@ -27,6 +25,9 @@ public class GUI extends Application {
     private Canvas canvas;
     private ClientNetworking networking;
     private volatile ControlState controlState;
+    
+    private double targetX;
+    private double targetY;
 
     public static void main(String[] args) {
         launch(args);
@@ -55,63 +56,58 @@ public class GUI extends Application {
                 mouseMoved(event);
             }
         });
-<<<<<<< HEAD
-
-=======
+        
         canvas.setOnKeyPressed(new EventHandler<KeyEvent>() {
             public void handle(KeyEvent event) {
                 keyPressed(event);
             }
         });
         
->>>>>>> d83df3c984714e017217b094fd0dd55526e38754
         grid.add(canvas, 0, 0);
 
         Timer timer = new Timer();
 
-        TimerTask updateDrawing = new TimerTask() {
+        TimerTask updateState = new TimerTask() {
             @Override
             public void run() {
-                updateCanvas(canvas.getGraphicsContext2D());
+                updateState(canvas.getGraphicsContext2D());
             }
         };
 
-        timer.scheduleAtFixedRate(updateDrawing, 33, 33);
+        timer.scheduleAtFixedRate(updateState, 33, 33);
 
         return grid;
     }
 
-    private void updateCanvas(GraphicsContext g) {
+    private void updateState(GraphicsContext g) {
         if (networking == null) {
             return;
         }
-        g.setFill(Color.GREY);
+        
+        Entity player = networking.getCurrentPlayer();
+        if (player != null) {
+            double dx = targetX - player.getxLocation();
+            double dy = targetY - player.getyLocation();
+            double distance = Math.sqrt(dx * dx + dy * dy);
+            controlState.setMagnitude(distance / 50 > 1 ? 1 : distance / 50);
+            // TODO: account for different quadrants here
+            double angle = Math.atan2(dy, dx);
+            
+            controlState.setDirection(angle);
+        }
+        
+        g.setFill(Color.BLACK);
         g.fillRect(0, 0, 800, 800);
         for (Entity entity : networking.getLatestState()) {
-            System.out.println("Drawing entity");
-            
             g.setFill(entity.getColor());
-            g.fillRect(10, 10, 100, 100);
-            g.setFill(Color.AQUA);
             g.fillOval(
                     entity.getxLocation() - entity.getRadius() / 2,
                     entity.getyLocation() - entity.getRadius() / 2,
                     entity.getRadius(), 
                     entity.getRadius());
+            
         }
     }
-<<<<<<< HEAD
-
-    private void mouseMoved(MouseEvent event) {
-        /*
-         * // System.out.println("x: " + event.getX() + "\ny: " + event.getY());
-         * Entity player = networking.getCurrentPlayer(); double dx =
-         * event.getX() - player.getx(); double dy = event.getY() -
-         * player.gety(); // TODO: account for different quadrants here double
-         * angle = Math.atan(dy / dx); controlState.setDirection(angle);
-         */
-=======
-    
     private void keyPressed(KeyEvent event) {
         KeyCode code = event.getCode();
         if (code.equals(KeyCode.SPACE)) {
@@ -124,16 +120,8 @@ public class GUI extends Application {
     }
     
     private void mouseMoved(MouseEvent event) {
-//        System.out.println("x: " + event.getX() + "\ny: " + event.getY());
-        Entity player = networking.getCurrentPlayer();
-        double dx = event.getX() - player.getx();
-        double dy = event.getY() - player.gety();
-        double distance = Math.sqrt(dx * dx + dy * dy);
-        controlState.setMagniture(distance > 10 ? 10 : distance);
-        // TODO: account for different quadrants here
-        double angle = Math.atan(dy / dx);
-        controlState.setDirection(angle);
->>>>>>> d83df3c984714e017217b094fd0dd55526e38754
+        targetX = event.getX();
+        targetY = event.getY();
     }
 
 }

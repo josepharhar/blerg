@@ -1,6 +1,6 @@
-package networking;
+package common.networking;
 
-public class UpdateHeader {
+public class UpdateFooter {
     private long youAre;
     
     public long getYouAre() {

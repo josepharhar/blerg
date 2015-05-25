@@ -1,17 +1,54 @@
 package common;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javafx.scene.paint.Color;
 
+
 public class Entity {
+    
+    public static enum EntityType {
+        PLAYER,
+        FOOD,
+        VIRUS;
+    }
+    
     private long entityID;
-    private double xLocation;
-    private double yLocation;
-    private double xVelocity;
-    private double yVelocity;
-    private double radius;
+    
+    protected double xLocation;
+    protected double yLocation;
+    protected double xVelocity;
+    protected double yVelocity;
+    protected double radius;
+    
     private int red;
     private int blue;
     private int green;
+    private EntityType type;
+    
+    public Entity(long entityID, double xLocation, double yLocation,
+            double xVelocity, double yVelocity, double radius, int red,
+            int blue, int green, EntityType type) {
+        this.entityID = entityID;
+        this.xLocation = xLocation;
+        this.yLocation = yLocation;
+        this.xVelocity = xVelocity;
+        this.yVelocity = yVelocity;
+        this.radius = radius;
+        this.red = red;
+        this.blue = blue;
+        this.green = green;
+        this.type = type;
+    }
+    
+    public Entity() {
+        
+    }
+    
+    public void update() {
+        this.xLocation += xVelocity;
+        this.yLocation += yVelocity;
+    }
     
     public long getEntityID() {
         return entityID;
@@ -60,10 +97,41 @@ public class Entity {
     public void setRadius(double radius) {
         this.radius = radius;
     }
-    
-    
-    public void setColor(Color color) {
-        this.color = color;
+
+    public int getRed() {
+        return red;
+    }
+
+    public void setRed(int red) {
+        this.red = red;
+    }
+
+    public int getBlue() {
+        return blue;
+    }
+
+    public void setBlue(int blue) {
+        this.blue = blue;
+    }
+
+    public int getGreen() {
+        return green;
+    }
+
+    public void setGreen(int green) {
+        this.green = green;
+    }
+
+    public EntityType getType() {
+        return type;
+    }
+
+    public void setType(EntityType type) {
+        this.type = type;
     }
     
+    @JsonIgnore
+    public Color getColor() {
+        return Color.rgb(red, green, blue);
+    }
 }

@@ -1,12 +1,12 @@
 package common;
 
 public class ControlState {
-	private boolean splitting;
-	private boolean shooting;
-	private double direction;
-	
-	//1 or greater = max speed
-	private double magniture;
+    private volatile boolean splitting;
+    private volatile boolean shooting;
+    private volatile double direction;
+
+    // 1 or greater = max speed
+    private double magnitude;
 
     public boolean isSplitting() {
         return splitting;
@@ -32,18 +32,18 @@ public class ControlState {
         this.direction = direction;
     }
 
-    public double getMagniture() {
-        return magniture;
+    public double getMagnitude() {
+        return magnitude > 1.0 ? 1.0 : (magnitude > 0 ? magnitude : 0);
     }
 
-    public void setMagniture(double magniture) {
-        this.magniture = magniture;
+    public void setMagnitude(double magniture) {
+        this.magnitude = magniture;
     }
 
     @Override
     public String toString() {
         return "ControlState [splitting=" + splitting + ", shooting="
                 + shooting + ", direction=" + direction + ", magniture="
-                + magniture + "]";
+                + magnitude + "]";
     }
 }
