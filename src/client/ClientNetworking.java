@@ -42,7 +42,7 @@ public class ClientNetworking {
                 doNetworkTick();
             }
         };
-        timer.schedule(doNetworking, 100, 100);
+        timer.schedule(doNetworking, 100, 30);
     }
 
     public List<Entity> getLatestState() {

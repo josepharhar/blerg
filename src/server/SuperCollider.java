@@ -29,28 +29,28 @@ public class SuperCollider {
         int numAdded = 0;
         for (Entity obj : objects) {
             numAdded = 0;
-            /*
-            Position pos = obj.getLocation();
-            if (pos.x + obj.getr() > middle.x) {
-                if (pos.y + obj.getr() > middle.y) {
+            double x = obj.getxLocation();
+            double y = obj.getyLocation();
+            if (x + obj.getRadius() > middle.x) {
+                if (y + obj.getRadius() > middle.y) {
                     numAdded++;
                     topLeft.add(obj);
                 }
-                if (pos.y - obj.getr() < middle.y) {
+                if (y - obj.getRadius() < middle.y) {
                     numAdded++;
                     topRight.add(obj);
                 }
             }
-            if (pos.x - obj.getr() < middle.x) {
-                if (pos.y + obj.getr() > middle.y) {
+            if (x - obj.getRadius() < middle.x) {
+                if (y + obj.getRadius() > middle.y) {
                     numAdded++;
                     bottomLeft.add(obj);
                 }
-                if (pos.y - obj.getr() < middle.y) {
+                if (y - obj.getRadius() < middle.y) {
                     numAdded++;
                     bottomRight.add(obj);
                 }
-            }*/
+            }
             if (numAdded > 1) {
                 doubled += numAdded - 1;
             }
@@ -68,13 +68,13 @@ public class SuperCollider {
         }
     }
 
-    public static void dumbCollide(HashMap<Entity, List<Entity>> collisions, List<Entity> objects) {/*
+    public static void dumbCollide(HashMap<Entity, List<Entity>> collisions, List<Entity> objects) {
         for (Entity a : objects) {
             for (Entity b : objects) {
-                if (a != b && Position.distance(a.getLocation(), b.getLocation()) < a.getr() + b.getr()) {
+                if (a != b && distance(a, b) < Math.max(a.getRadius(), b.getRadius())) {
                     List<Entity> alreadyCollided = collisions.get(a);
                     if (alreadyCollided == null || !alreadyCollided.contains(b)) {
-                        //a.collide(b);
+                        a.collide(b);
                         if (alreadyCollided == null) {
                             alreadyCollided = new LinkedList<Entity>();
                             collisions.put(a, alreadyCollided);
@@ -83,7 +83,7 @@ public class SuperCollider {
                     }
                 }
             }
-        }*/
+        }
     }
 
     private static Position findMiddle(List<Entity> objects) {
@@ -91,10 +91,16 @@ public class SuperCollider {
         double y = 0.0;
         int count = 0;
         for (Entity obj : objects) {
-            //x += obj.getLocation().x;
-            //y += obj.getLocation().y;
+            x += obj.getxLocation();
+            y += obj.getyLocation();
             count++;
         }
         return new Position(x / count, y / count);
+    }
+    
+    public static double distance(Entity a, Entity b) {
+        double y = a.getyLocation() - b.getyLocation();
+        double x = a.getxLocation() - b.getxLocation();
+        return Math.sqrt(y*y+x*x);
     }
 }

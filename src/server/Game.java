@@ -28,7 +28,7 @@ public class Game {
     }
 
     private void updateGameState() {
-        //SuperCollider.collide(entities);
+        SuperCollider.collide(entities);
 
         for (Entity entity : entities) {
             entity.update();

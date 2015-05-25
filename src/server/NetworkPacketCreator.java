@@ -38,13 +38,15 @@ public class NetworkPacketCreator {
         List<Entity> entities = game.getEntities();
         StringBuilder sb = new StringBuilder();
         for (Entity entity : entities) {
-            try {
-                sb.append(entityWriter.writeValueAsString(entity));
-            } catch (Exception e) {
-                System.out.println("Exception caught in generation of transmission string");
-                throw new RuntimeException(e);
+            if (!entity.hasBeenEaten()) {
+                try {
+                    sb.append(entityWriter.writeValueAsString(entity));
+                } catch (Exception e) {
+                    System.out.println("Exception caught in generation of transmission string");
+                    throw new RuntimeException(e);
+                }
+                sb.append("\0");
             }
-            sb.append("\0");
         }
         latestEntityTransmission = sb.toString();
     }

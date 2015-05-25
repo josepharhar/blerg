@@ -74,7 +74,7 @@ public class GUI extends Application {
             }
         };
 
-        timer.scheduleAtFixedRate(updateState, 33, 33);
+        timer.scheduleAtFixedRate(updateState, 20, 20);
 
         return grid;
     }
@@ -89,8 +89,7 @@ public class GUI extends Application {
             double dx = targetX - player.getxLocation();
             double dy = targetY - player.getyLocation();
             double distance = Math.sqrt(dx * dx + dy * dy);
-            controlState.setMagnitude(distance / 50 > 1 ? 1 : distance / 50);
-            // TODO: account for different quadrants here
+            controlState.setMagnitude(distance / 60 > 1 ? 1 : distance / 60);
             double angle = Math.atan2(dy, dx);
             
             controlState.setDirection(angle);

@@ -26,8 +26,8 @@ public class Player extends Entity {
         double xChange = xScale * controlState.getMagnitude();
         yVelocity += yChange;
         xVelocity += xChange;
-        yVelocity *= .8;
-        xVelocity *= .8;
+        yVelocity *= .6;
+        xVelocity *= .6;
         super.update();
     }
     

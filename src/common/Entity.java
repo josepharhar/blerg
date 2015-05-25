@@ -26,6 +26,9 @@ public class Entity {
     private int green;
     private EntityType type;
     
+    @JsonIgnore
+    private boolean eaten = false;
+    
     public Entity(long entityID, double xLocation, double yLocation,
             double xVelocity, double yVelocity, double radius, int red,
             int blue, int green, EntityType type) {
@@ -48,6 +51,22 @@ public class Entity {
     public void update() {
         this.xLocation += xVelocity;
         this.yLocation += yVelocity;
+    }
+
+    @JsonIgnore
+    public boolean hasBeenEaten() {
+        return eaten;
+    }
+
+    @JsonIgnore
+    public void collide(Entity other) {
+        if (eaten == false) {
+            if (other.radius > radius) {
+                eaten = true;
+                other.radius += radius;
+                radius = 0;
+            }
+        }
     }
     
     public long getEntityID() {
