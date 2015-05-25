@@ -30,7 +30,7 @@ public class ClientNetworking {
         this.controlState = controlState;
         
         try {
-            socket = new Socket("127.0.0.1", 50805);
+            socket = new Socket("127.0.0.1", 5080);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);

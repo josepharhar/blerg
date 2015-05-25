@@ -28,7 +28,7 @@ public class ConnectionManager {
     public void beginAcceptingConnections() {
         
         try {
-            serverSocket = new ServerSocket(50805);
+            serverSocket = new ServerSocket(5080);
             executor.scheduleWithFixedDelay(() -> acceptPendingConnection(), 100, 100, TimeUnit.MILLISECONDS);
         } catch (Exception ex) {
             System.out.println("Exception during network initialization: " + ex.getMessage());
